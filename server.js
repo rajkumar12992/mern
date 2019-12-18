@@ -5,6 +5,8 @@ const app = express();
 
 connectDB();
 
+app.use(express.json({ extended: false }));
+
 app.get('/', (req, res) => res.send('Api running'));
 
 app.use('/api/users', require('./routes/api/users'));
