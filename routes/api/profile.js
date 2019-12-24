@@ -172,4 +172,55 @@ router.delete('/experience/:e_id', auth, async (req, res) => {
     }
 });
 
+router.put('/education', 
+    [
+        auth, 
+        [
+            check('school', 'School is required').not().isEmpty(),
+            check('degree', 'Degree is required').not().isEmpty()
+        ]
+    ], 
+    async (req, res) => {
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() })
+        }
+
+        const { school,degree } = req.body;
+
+        const newEdu = {
+            school,
+            degree
+        }
+
+        try {
+            const profile = await Profile.findOne({ user: req.user.id });
+            profile.education.unshift(newEdu);
+            await profile.save();
+            res.json(profile);
+        } catch (error) {
+            return res.status(500).json({ msg: "Server error"});
+        }
+    }
+);
+
+router.delete('/education/:e_id', auth, async (req, res) => {
+    try {
+        const profile = await Profile.findOne({ user: req.user.id });
+        
+        const removeIndex = profile.education
+            .map(item => item.id)
+            .indexOf(req.params.e_id);
+
+        profile.education.splice(removeIndex, 1);
+        
+        await profile.save();
+        res.json(profile);
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({ msg: "Server error" });
+    }
+});
+
 module.exports = router;
