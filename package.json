@@ -20,7 +20,7 @@
     "request": "^2.88.0"
   },
   "devDependencies": {
-    "concurrently": "^5.0.1",
+    "concurrently": "^5.0.2",
     "nodemon": "^2.0.2"
   }
 }
